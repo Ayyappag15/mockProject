@@ -18,5 +18,8 @@ This is a simple ReactJS application that supports:
 npm install
 
 npm start
+# Login
+UserId: admin
+password: admin123
 
 npm test
