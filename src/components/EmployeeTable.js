@@ -12,6 +12,13 @@ const EmployeeTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
+  // Currency formatter
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+  });
+
   const loadEmployees = async () => {
     const res = await fetchEmployees();
     setEmployees(res.data);
@@ -140,7 +147,7 @@ const EmployeeTable = () => {
               <td className="border px-2 py-1">{emp.firstName}</td>
               <td className="border px-2 py-1">{emp.lastName}</td>
               <td className="border px-2 py-1">{emp.email}</td>
-              <td className="border px-2 py-1">{emp.salary}</td>
+              <td className="border px-2 py-1">{formatter.format(emp.salary)}</td>
               <td className="border px-2 py-1">{emp.date || '-'}</td>
               <td className="border px-2 py-1">
                 <button className="text-blue-600 mr-2" onClick={() => { setEditingEmployee(emp); setShowForm(true); }}>Edit</button>
