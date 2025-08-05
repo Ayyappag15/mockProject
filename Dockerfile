@@ -4,8 +4,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+
+RUN chmod +x node_modules/.bin/react-scripts
 RUN npm run build
- 
+
 # Step 2: Serve with Nginx
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
