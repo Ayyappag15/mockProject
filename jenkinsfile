@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "docker.io/library/employee"
+        TAG = "latest"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Ayyappag15/mockProject'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test -- --watchAll=false'
+            }
+        }
+
+        stage('Build React App') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Build Podman Image') {
+            steps {
+                sh "podman build -t $IMAGE_NAME:$TAG ."
+            }
+        }
+
+        stage('Push Podman Image (Optional)') {
+            steps {
+                // Replace below if pushing to a remote registry
+                sh "podman image save $IMAGE_NAME:$TAG -o employee-app.tar"
+                // or push to a remote registry if needed
+                // sh "podman push $IMAGE_NAME:$TAG"
+            }
+        }
+
+        stage('Deploy (Optional)') {
+            steps {
+                sh 'podman-compose down || true'
+                sh 'podman-compose up -d'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
